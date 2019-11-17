@@ -1,9 +1,10 @@
 import React, {Component} from "react";
-import {Col, Table} from 'reactstrap';
+import {Col, Table, Button} from 'reactstrap';
 
 import AdmZip from 'adm-zip';
 import request from 'request';
 import axios from 'axios';
+import ButtonGroup from "reactstrap/es/ButtonGroup";
 
 class FeeTable extends Component {
     constructor(props) {
@@ -17,12 +18,35 @@ class FeeTable extends Component {
             results: [],
             infoUrl: 'http://www.bestchange.ru/bm/info.zip',
             opacity: 0,
+            isBuy: true,
         };
     }
 
     componentDidMount() {
         this.opacityChanger();
         this.fetchExchangesData();
+    }
+
+    updateTableBuy() {
+        this.setState({
+            results: [],
+            isBuy: true,
+        });
+
+        setTimeout(()=> {
+            this.calculateFees()
+        }, 0);
+    }
+
+    updateTableSell() {
+        this.setState({
+            results: [],
+            isBuy: false,
+        });
+
+        setTimeout(()=> {
+            this.calculateFees()
+        }, 0);
     }
 
     opacityChanger() {
@@ -74,6 +98,12 @@ class FeeTable extends Component {
                     let data = zip.readAsText(entry, 'utf8');
                     data = data.split("\n");
                     this.setState({ currencyCodes: data });
+                } else if (entry.entryName.match(/bm_info/i)) {
+                    let data = zip.readAsText(entry, 'ascii');
+                    data = data.split("\n");
+                    data = data[0].slice(12, data[0].indexOf(','));
+                    console.log(data);
+                    this.setState({ dateOfUpdate: data });
                 }
             });
 
@@ -89,19 +119,29 @@ class FeeTable extends Component {
 
         for (let cc of this.state.cryptoCurrencies) {
             for (let fiat of this.state.fiatCodes) {
-                let pairRates = this.state.allRates.filter(s => s.startsWith(`${fiat.code};${cc.code};`));
+                let searchString = this.state.isBuy ? `${fiat.code};${cc.code};` : `${cc.code};${fiat.code};`;
+                let pairRates = this.state.allRates.filter(s => s.startsWith(searchString));
                 pairRates.forEach(s => {
                     s = s.split(';');
+                    let fee, price;
+                    if (this.state.isBuy) {
+                        fee = Number((((Number(s[3]) / cc.price) -1 ) * 100).toFixed(3));
+                        price = Number(s[3]).toFixed(2);
+                    } else {
+                        fee = Number(((1 - (Number(s[4]) / cc.price)) * 100).toFixed(3));
+                        price = Number(s[4]).toFixed(2);
+                    }
                     currencies.push({
-                        fee: Number((((Number(s[3]) / cc.price) - 1) * 100).toFixed(3)),
+                        fee: fee,
                         cryptoSymbol: cc.name,
-                        fiatSymbol: fiat.name.replace('SBERRUB', 'Сбер')
+                        fiatSymbol: fiat.name /*.replace('SBERRUB', 'Сбер')
                             .replace('QWRUB', 'Qiwi')
-                            .replace('YAMRUB', 'Яндекс'),
-                        price: Number(s[3]).toFixed(2),
+                            .replace('YAMRUB', 'Яндекс')*/,
+                        price: price,
                         reserve: s[5],
                         cryptoName: cc.fullName,
                         fiatName: fiat.fullName,
+
                     });
                 });
             }
@@ -112,7 +152,7 @@ class FeeTable extends Component {
             if (a.fee < b.fee) return -1;
             return 0;
         });
-
+        console.log(currencies.slice(0, 5));
         this.setState({
             results: currencies.slice(0, 12)
         });
@@ -155,6 +195,8 @@ class FeeTable extends Component {
         });
 
         this.setState({ cryptoCurrencies, fiatCodes });
+
+
     }
 
     getCurrencyCode(name) {
@@ -177,16 +219,31 @@ class FeeTable extends Component {
         if (!this.state.results.length) return <p style={{opacity: this.state.opacity }}>Calculations...</p>;
 
         return (
+
             <Col sm="12" md={{ size: 8}}>
-            <Table dark striped responsive="md">
+                <ButtonGroup>
+                <Button
+                    onClick={() => {this.updateTableBuy()}}
+                    disabled={this.state.isBuy}
+                    size="lg"
+                >Buy Crypto</Button>
+                <Button
+                    onClick={() => {this.updateTableSell()}}
+                    disabled={!this.state.isBuy}
+                    size="lg"
+                >Sell Crypto</Button>
+                </ButtonGroup>
+                <p />
+                <Table dark striped responsive="md">
                 <thead>
                     <tr>
                         <th>#</th>
                         <th>fee, %</th>
                         <th>currency</th>
-                        <th>buy with</th>
+                        {(this.state.isBuy && <th>buy with</th>) || <th>sell for</th>}
                         <th>price, rub</th>
                         <th>reserve</th>
+
                     </tr>
                 </thead>
                 <tbody>
@@ -194,7 +251,7 @@ class FeeTable extends Component {
                     return (
                         <tr key={i}>
                             <th scope="row">
-                                <a href={`https://www.bestchange.ru/${item.fiatName}-to-${item.cryptoName}.html`}
+                                <a href={`https://www.bestchange.ru/${item.cryptoName}-to-${item.fiatName}.html`}
                                    target="_blank"
                                    rel="noopener noreferrer"
                                    style={{textDecorationLine: "underline"}}
@@ -206,11 +263,13 @@ class FeeTable extends Component {
                             <td>{ item.fiatSymbol }</td>
                             <td>{ item.price }</td>
                             <td>{ item.reserve }</td>
+
                         </tr>
                     )
                 })}
                 </tbody>
             </Table>
+                <p>Last update {this.state.dateOfUpdate}</p>
             </Col>
         );
     }

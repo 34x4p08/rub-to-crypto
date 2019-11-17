@@ -4,10 +4,14 @@ import FeeTable from './FeeTable.js';
 import Footer from "./Footer";
 
 function App() {
+
   return (
     <div className="App">
       <header className="App-header">
-        <FeeTable/>
+
+
+          <FeeTable/>
+
       </header>
       <footer className="App-footer">
         <Footer/>
@@ -15,5 +19,6 @@ function App() {
     </div>
   );
 }
+
 
 export default App;

@@ -2,11 +2,11 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 # Live demo
 
-https://ipfs.io/ipfs/QmWXN2NtkaboodSWV5hZH52vat5QD5APBQR2fBKS9EX5Xh
+https://ipfs.io/ipfs/QmegYAJoFYHyqD8SRtYufWJ5yucuKJrsQCPWs9gm7tgxPY
 
 ## Description
 
-Find the best rate to exchange your roubles to crypto
+Find the best rate to exchange your roubles to crypto and back
 
 ### Algorithm
 

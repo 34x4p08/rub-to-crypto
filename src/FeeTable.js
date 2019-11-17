@@ -27,21 +27,10 @@ class FeeTable extends Component {
         this.fetchExchangesData();
     }
 
-    updateTableBuy() {
+    changeSelectedDir() {
         this.setState({
             results: [],
-            isBuy: true,
-        });
-
-        setTimeout(()=> {
-            this.calculateFees()
-        }, 0);
-    }
-
-    updateTableSell() {
-        this.setState({
-            results: [],
-            isBuy: false,
+            isBuy: !this.state.isBuy,
         });
 
         setTimeout(()=> {
@@ -222,16 +211,16 @@ class FeeTable extends Component {
 
             <Col sm="12" md={{ size: 8}}>
                 <ButtonGroup>
-                <Button
-                    onClick={() => {this.updateTableBuy()}}
-                    disabled={this.state.isBuy}
-                    size="lg"
-                >Buy Crypto</Button>
-                <Button
-                    onClick={() => {this.updateTableSell()}}
-                    disabled={!this.state.isBuy}
-                    size="lg"
-                >Sell Crypto</Button>
+                    <Button
+                        onClick={() => {this.changeSelectedDir()}}
+                        disabled={this.state.isBuy}
+                        size="lg"
+                    >Buy Crypto</Button>
+                    <Button
+                        onClick={() => {this.changeSelectedDir()}}
+                        disabled={!this.state.isBuy}
+                        size="lg"
+                    >Sell Crypto</Button>
                 </ButtonGroup>
                 <p />
                 <Table dark striped responsive="md">
@@ -251,7 +240,7 @@ class FeeTable extends Component {
                     return (
                         <tr key={i}>
                             <th scope="row">
-                                <a href={`https://www.bestchange.ru/${item.cryptoName}-to-${item.fiatName}.html`}
+                                <a href={`https://www.bestchange.ru/${this.state.isBuy ? item.fiatName : item.cryptoName}-to-${this.state.isBuy ? item.cryptoName : item.fiatName}.html`}
                                    target="_blank"
                                    rel="noopener noreferrer"
                                    style={{textDecorationLine: "underline"}}

@@ -2,7 +2,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 # Live demo
 
-https://ipfs.io/ipfs/QmS4NBWafb4igyDQy89tAqnwLHZDV6XEmNtxSMZ8aMb59i
+https://ipfs.io/ipfs/QmekBYGKcbx6oAJdRyeDSn4EsG5XdjaMre4vdiCoe77Zk5
 
 ## Description
 
@@ -40,7 +40,7 @@ Find the best rate to exchange your roubles to crypto and back
             <li>OMG</li>
             <li>BNB</li>
             <li>ICX</li>
-            <li>BA</li>
+            <li>BAT</li>
         </ul>
     </details>
     <details><summary>Fiat Assets</summary>

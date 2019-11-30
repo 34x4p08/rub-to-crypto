@@ -31,3 +31,25 @@
 .App-link {
   color: #09d3ac;
 }
+
+.App-header .pagination {
+  display: inline-flex;
+}
+
+
+.App-header .page-link {
+  background-color: #454d55;
+  border-color: #95999c;
+  color: white;
+  outline-style: none;
+  box-shadow: none;
+}
+
+.App-header .page-item.active .page-link {
+  background-color: #95999c;
+  border-color: #95999c;
+  outline-style: none;
+  box-shadow: none;
+}
+
+a:focus {outline:0;}

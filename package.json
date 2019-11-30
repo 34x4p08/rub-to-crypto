@@ -38,5 +38,17 @@
     "url": "https://github.com/34x4p08/rub-to-crypto.git"
   },
   "license": "MIT",
-  "homepage": "./"
+  "homepage": "./",
+  "devDependencies": {
+    "eslint": "^6.7.1",
+    "eslint-config-standard": "^14.1.0",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-node": "^10.0.0",
+    "eslint-plugin-prettier": "^3.1.1",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-react": "^7.17.0",
+    "eslint-plugin-standard": "^4.0.1",
+    "prettier": "1.19.1",
+    "prettier-eslint": "^9.0.1"
+  }
 }
